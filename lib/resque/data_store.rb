@@ -76,7 +76,8 @@ module Resque
       @redis.inspect
     end
 
-    # Force a reconnect to Redis.
+    # Force a reconnect to Redis without closing the connection in the parent
+    # process after a fork.
     def reconnect
       @redis._client.connect
     end
