@@ -1241,7 +1241,7 @@ describe "Resque::Worker" do
     end
 
     it "tries to reconnect three times before giving up and the failure does not unregister the parent" do
-      @worker.redis._client.stubs(:reconnect).raises(Redis::BaseConnectionError)
+      @worker.data_store.stubs(:reconnect).raises(Redis::BaseConnectionError)
       @worker.stubs(:sleep)
 
       Resque.logger = DummyLogger.new
@@ -1255,7 +1255,7 @@ describe "Resque::Worker" do
     end
 
     it "tries to reconnect three times before giving up" do
-      @worker.redis._client.stubs(:reconnect).raises(Redis::BaseConnectionError)
+      @worker.data_store.stubs(:reconnect).raises(Redis::BaseConnectionError)
       @worker.stubs(:sleep)
 
       Resque.logger = DummyLogger.new
