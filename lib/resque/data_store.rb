@@ -78,7 +78,7 @@ module Resque
 
     # Force a reconnect to Redis.
     def reconnect
-      @redis._client.reconnect
+      @redis._client.connect
     end
 
     # Returns an array of all known Resque keys in Redis. Redis' KEYS operation
