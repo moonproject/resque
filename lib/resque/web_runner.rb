@@ -86,7 +86,7 @@ module Resque
 
     def before_run
       if (namespace = options[:redis_namespace])
-        logger.info "Using Redis namespace '#{namespace}'"
+        runner.logger.info "Using Redis namespace '#{namespace}'"
         Resque.redis.namespace = namespace
       end
       if (redis_conf = options[:redis_conf])
