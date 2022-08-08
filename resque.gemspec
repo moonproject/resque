@@ -3,7 +3,7 @@ require 'resque/version'
 
 Gem::Specification.new do |s|
   s.name              = "resque"
-  s.version           = Resque::VERSION
+  s.version           = Resque::Version
   s.summary           = "Resque is a Redis-backed queueing system."
   s.homepage          = "https://github.com/resque/resque"
   s.email             = "steve@steveklabnik.com"
