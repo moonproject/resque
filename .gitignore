@@ -10,4 +10,3 @@ pkg
 .ruby-version
 .ruby-gemset
 *.sw?
-vendor/bundle

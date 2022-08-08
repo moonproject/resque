@@ -24,23 +24,6 @@ describe "Resque::Worker" do
     Resque::Job.create(:jobs, SomeJob, 20, '/tmp')
   end
 
-  it 'worker is paused' do
-    Resque.redis.set('pause-all-workers', 'true')
-    assert_equal true, @worker.paused?
-    Resque.redis.set('pause-all-workers', 'TRUE')
-    assert_equal true, @worker.paused?
-    Resque.redis.set('pause-all-workers', 'True')
-    assert_equal true, @worker.paused?
-  end
-
-  it 'worker is not paused' do
-    assert_equal false, @worker.paused?
-    Resque.redis.set('pause-all-workers', 'false')
-    assert_equal false, @worker.paused?
-    Resque.redis.del('pause-all-workers')
-    assert_equal false, @worker.paused?
-  end
-
   it "can fail jobs" do
     Resque::Job.create(:jobs, BadJob)
     @worker.work(0)
@@ -289,7 +272,7 @@ describe "Resque::Worker" do
   it "supports setting the procline to have arbitrary prefixes and suffixes" do
     prefix = 'WORKER-TEST-PREFIX/'
     suffix = 'worker-test-suffix'
-    ver = Resque::VERSION
+    ver = Resque::Version
 
     old_prefix = ENV['RESQUE_PROCLINE_PREFIX']
     ENV.delete('RESQUE_PROCLINE_PREFIX')
@@ -429,49 +412,6 @@ describe "Resque::Worker" do
     assert_equal 1, Resque.size(:critical)
     assert_equal 0, Resque.size(:test_one)
     assert_equal 0, Resque.size(:test_two)
-  end
-
-  it "excludes a negated queue" do
-    Resque::Job.create(:critical, GoodJob)
-    Resque::Job.create(:high, GoodJob)
-    Resque::Job.create(:low, GoodJob)
-
-    @worker = Resque::Worker.new(:critical, "!low", "*")
-    @worker.work(0)
-
-    assert_equal 0, Resque.size(:critical)
-    assert_equal 0, Resque.size(:high)
-    assert_equal 1, Resque.size(:low)
-  end
-
-  it "excludes multiple negated queues" do
-    Resque::Job.create(:critical, GoodJob)
-    Resque::Job.create(:high, GoodJob)
-    Resque::Job.create(:foo, GoodJob)
-    Resque::Job.create(:bar, GoodJob)
-
-    @worker = Resque::Worker.new("*", "!foo", "!bar")
-    @worker.work(0)
-
-    assert_equal 0, Resque.size(:critical)
-    assert_equal 0, Resque.size(:high)
-    assert_equal 1, Resque.size(:foo)
-    assert_equal 1, Resque.size(:bar)
-  end
-
-  it "works with negated globs" do
-    Resque::Job.create(:critical, GoodJob)
-    Resque::Job.create(:high, GoodJob)
-    Resque::Job.create(:test_one, GoodJob)
-    Resque::Job.create(:test_two, GoodJob)
-
-    @worker = Resque::Worker.new("*", "!test_*")
-    @worker.work(0)
-
-    assert_equal 0, Resque.size(:critical)
-    assert_equal 0, Resque.size(:high)
-    assert_equal 1, Resque.size(:test_one)
-    assert_equal 1, Resque.size(:test_two)
   end
 
   it "has a unique id" do
@@ -638,7 +578,7 @@ describe "Resque::Worker" do
     without_forking do
       @worker.extend(AssertInWorkBlock).work(0) do
         prefix = ENV['RESQUE_PROCLINE_PREFIX']
-        ver = Resque::VERSION
+        ver = Resque::Version
         assert_equal "#{prefix}resque-#{ver}: Processing jobs since #{Time.now.to_i} [SomeJob]", $0
       end
     end
@@ -700,14 +640,6 @@ describe "Resque::Worker" do
         end
       end
     end
-  end
-
-  it "retrieve queues (includes colon) from worker_id" do
-    worker = Resque::Worker.new("jobs", "foo:bar")
-    worker.register_worker
-
-    found = Resque::Worker.find(worker.to_s)
-    assert_equal worker.queues, found.queues
   end
 
   it "prunes dead workers with heartbeat older than prune interval" do
@@ -786,24 +718,6 @@ describe "Resque::Worker" do
     @worker.prune_dead_workers
 
     assert_equal 1, Resque.workers.size
-  end
-
-  it "prunes workers that haven't been registered but have set a heartbeat" do
-    assert_equal({}, Resque::Worker.all_heartbeats)
-    now = Time.now
-
-    workerA = Resque::Worker.new(:jobs)
-    workerA.to_s = "bar:3:jobs"
-    workerA.heartbeat!(now - Resque.prune_interval - 1)
-
-    assert_equal 0, Resque.workers.size
-    assert Resque::Worker.all_heartbeats.key?(workerA.to_s)
-    assert_equal [], Resque::Worker.all
-
-    @worker.prune_dead_workers
-
-    assert_equal 0, Resque.workers.size
-    assert_equal({}, Resque::Worker.all_heartbeats)
   end
 
   it "does return a valid time when asking for heartbeat" do
@@ -1241,29 +1155,6 @@ describe "Resque::Worker" do
     assert_equal 1, Resque::Failure.count
   end
 
-  it '.clear_retried should clear all retried jobs' do
-    # Job 1
-    Resque::Failure.create(:exception => Exception.new, :worker => Resque::Worker.new('queue'), :queue => 'queue', :payload => {'class' => 'GoodJob' })
-
-    # Job 2
-    Resque::Failure.create(:exception => Exception.new, :worker => Resque::Worker.new('queue'), :queue => 'queue', :payload => {'class' => 'GoodJob' })
-
-    # Job 3
-    Resque::Failure.create(:exception => Exception.new, :worker => Resque::Worker.new('queue'), :queue => 'other_queue', :payload => {'class' => 'GoodJob' })
-
-    assert_equal 3, Resque::Failure.count
-
-    # Retry Job 1 and Job 3
-    Resque::Failure.requeue(0)
-    Resque::Failure.requeue(2)
-
-    assert_equal 3, Resque::Failure.count
-
-    Resque::Failure.clear_retried
-
-    assert_equal 1, Resque::Failure.count
-  end
-
   it "no reconnects to redis when not forking" do
     original_connection = Resque.redis._client.connection.instance_variable_get("@sock")
     without_forking do
@@ -1346,7 +1237,6 @@ describe "Resque::Worker" do
       new_connection = run_in_job do
         Resque.redis._client.connection.instance_variable_get("@sock").object_id
       end
-      assert Resque.redis._client.connected?
       refute_equal original_connection, new_connection
     end
 

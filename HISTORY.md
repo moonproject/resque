@@ -1,67 +1,12 @@
-## 2.3.0
-
-### Fixed
-
-* Fix NoMethodError: undefined method 'application' for Rails:Module when Rails module is defined but not a full Rails app (#1799)
-* Fix deprecation warnings in Redis#pipelined for redis 4.6 (#1806)
-* Add Ruby syntax highlighting to remaining markdown docs (#1802)
-* Fix pagination section (#1809)
-* Fix `before_run` undefined local variable or method `runner` (#1811)
+## Unreleased
 
 ### Added
-
-* Added support for pausing all workers by setting the Redis key `pause-all-workers` to string value "true" (#1803)
-
-## 2.2.1
-
-### Fixed
-
-* Escape HTML from the params to avoid XSS (#1790)
-* Remove vegas as a dependency (#1780)
-
-### Added
-
-* Add support for specifying queues that workers should ignore when using globs
-* Allow plugins to have spaces in their name (#1718)
-
-## 2.2.0
-
-### Added
-
-* Add 'Retry Failed Jobs' button to Failed page
-
-### Fixed
-
-* Loading railtie when it did not exist #1765
-* Fix closing parent Redis connection in child process after fork
-* Fix the failed queues list on /queues UI when the RedisMultiQueue backend is used #1638
-
-## 2.1.0
-
-### Security
-
-* Fix XSS via URL path in admin web UI queues view #1687
-* Replace onclick handlers in server code to support Content Security Policies that don't allow 'unsafe-inline'
-* Update jQuery from 1.12.4 to 3.6.0
-
-### Added
-
-* Add requeue_queue method to Resque::Failure::Multiple #1659
-* Confirmation prompt in admin front-end before submitting the retry of all failed jobs. #1753
-* Railtie for default rake task setup when in Rails. #1715
 * Added two new hooks.
   - `queue_empty` when the job queue empties and the worker becomes idle
   - `worker_exit` when the worker exits
 
   See [docs/HOOKS.md](http://github.com/resque/resque/blob/master/docs/HOOKS.md) for
   further details. (@jeremywadsack)
-
-### Fixed
-
-* live poller shouldn't restart itself until it successds or fails. #1740
-* Fix parsing worker_id when queue name includes colon. #1691
-* Prune workers which haven't been registered but have set a heartbeat. #1751
-* `Resque::Failure::Multiple.remove` did not pass on the queue parameter
 
 ## 2.0.0 (2018-11-06)
 

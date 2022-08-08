@@ -12,16 +12,24 @@ The main way to contribute to Resque is to write some code! Here's how:
    branch
 5. That's it!
 
-An entry in the `HISTORY.md` is appropriate for changes that aren't of purely
-internal consequences. Please include a modification of HISTORY.md adding a
-bullet for your change in your pull request where relevant.
+If you're not doing some sort of refactoring, a CHANGELOG entry is appropriate.
+Please include them in pull requests adding features or fixing bugs.
 
 Oh, and 80 character columns, please!
+
+For more information, see
+Steve Klabnik's post here about the direction and current state of Resque:
+[Rescuing Resque...again](http://words.steveklabnik.com/rescuing-resque-again)
 
 Tests
 -----
 
-We use minitest for testing. 
+We use minitest for testing. If you're working against master, you'll find
+a bunch of tests in `test/legacy`. These are the older Resque tests. Don't
+look at them unless your code breaks them. Consider these black-box acceptance
+tests. We don't like them, but we want to make sure we're not breaking
+anything.
+
 A simple `bundle exec rake` will run all the tests. Make sure they pass when
 you submit a pull request.
 

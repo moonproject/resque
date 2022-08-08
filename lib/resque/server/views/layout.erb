@@ -5,10 +5,9 @@
   <title>Resque</title>
   <link href="<%=u 'reset.css' %>" media="screen" rel="stylesheet" type="text/css">
   <link href="<%=u 'style.css' %>" media="screen" rel="stylesheet" type="text/css">
-  <script src="<%=u 'jquery-3.6.0.min.js' %>" type="text/javascript"></script>
+  <script src="<%=u 'jquery-1.12.4.min.js' %>" type="text/javascript"></script>
   <script src="<%=u 'jquery.relatize_date.js' %>" type="text/javascript"></script>
   <script src="<%=u 'ranger.js' %>" type="text/javascript"></script>
-  <script src="<%=u 'main.js' %>" type="text/javascript"></script>
 </head>
 <body>
   <div class="header">
@@ -37,7 +36,7 @@
 </div>
 
 <div id="footer">
-  <p>Powered by <a href="http://github.com/resque/resque">Resque</a> v<%=Resque::VERSION%></p>
+  <p>Powered by <a href="http://github.com/resque/resque">Resque</a> v<%=Resque::Version%></p>
   <p>Connected to Redis namespace <%= Resque.redis.namespace %> on <%=Resque.redis_id%></p>
 </div>
 

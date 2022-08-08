@@ -1,0 +1,23 @@
+language: ruby
+sudo: false
+cache: bundler
+
+before_install:
+  - gem install bundler
+
+script: bundle exec rake
+
+rvm:
+  - 2.4.9
+  - 2.5.7
+  - 2.6.5
+  - 2.7.0
+  - ruby-head
+
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+  fast_finish: true
+  include:
+    - rvm: 2.4.9
+      script: bundle exec rubocop

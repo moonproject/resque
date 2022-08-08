@@ -23,8 +23,6 @@ require 'resque/thread_signal'
 
 require 'resque/vendor/utf8_util'
 
-require 'resque/railtie' if defined?(Rails::Railtie)
-
 module Resque
   include Helpers
   extend self
@@ -364,8 +362,8 @@ module Resque
     data_store.queue_size(queue)
   end
 
-  # Returns an array of items currently queued, or the item itself
-  # if count = 1. Queue name should be a string.
+  # Returns an array of items currently queued. Queue name should be
+  # a string.
   #
   # start and count should be integer and can be used for pagination.
   # start is the item to begin, count is how many items to return.
@@ -584,9 +582,9 @@ module Resque
   def queue_sizes
     queue_names = queues
 
-    sizes = redis.pipelined do |piped|
+    sizes = redis.pipelined do
       queue_names.each do |name|
-        piped.llen("queue:#{name}")
+        redis.llen("queue:#{name}")
       end
     end
 
@@ -597,11 +595,11 @@ module Resque
   def sample_queues(sample_size = 1000)
     queue_names = queues
 
-    samples = redis.pipelined do |piped|
+    samples = redis.pipelined do
       queue_names.each do |name|
         key = "queue:#{name}"
-        piped.llen(key)
-        piped.lrange(key, 0, sample_size - 1)
+        redis.llen(key)
+        redis.lrange(key, 0, sample_size - 1)
       end
     end
 

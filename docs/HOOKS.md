@@ -5,7 +5,7 @@ You can customize Resque or write plugins using its hook API. In many
 cases you can use a hook rather than mess with Resque's internals.
 
 For a list of available plugins see
-<https://github.com/resque/resque/wiki/plugins>.
+<http://wiki.github.com/resque/resque/plugins>.
 
 
 Worker Hooks
@@ -14,19 +14,15 @@ Worker Hooks
 If you wish to have a Proc called before the worker forks for the
 first time, you can add it in the initializer like so:
 
-``` ruby
-Resque.before_first_fork do
-  puts "Call me once before the worker forks the first time"
-end
-```
+    Resque.before_first_fork do
+      puts "Call me once before the worker forks the first time"
+    end
 
 You can also run a hook before _every_ fork:
 
-``` ruby
-Resque.before_fork do |job|
-  puts "Call me before the worker forks"
-end
-```
+    Resque.before_fork do |job|
+      puts "Call me before the worker forks"
+    end
 
 The `before_fork` hook will be run in the **parent** process. So, be
 careful - any changes you make will be permanent for the lifespan of
@@ -34,11 +30,9 @@ the worker.
 
 And after forking:
 
-``` ruby
-Resque.after_fork do |job|
-  puts "Call me after the worker forks"
-end
-```
+    Resque.after_fork do |job|
+      puts "Call me after the worker forks"
+    end
 
 The `after_fork` hook will be run in the child process and is passed
 the current job. Any changes you make, therefore, will only live as
@@ -46,27 +40,21 @@ long as the job currently being processes.
 
 All worker hooks can also be set using a setter, e.g.
 
-``` ruby
-Resque.after_fork = proc { puts "called" }
-```
+    Resque.after_fork = proc { puts "called" }
 
 When the worker finds no more jobs in the queue:
 
-``` ruby
-Resque.queue_empty do
-  puts "Call me whenever the worker becomes idle"
-end
-```
+    Resque.queue_empty do
+      puts "Call me whenever the worker becomes idle"
+    end
 
 The `queue_empty` hook will be run in the **parent** process.
 
 When the worker exits:
 
-``` ruby
-Resque.worker_exit do
-  puts "Call me when the work is about to terminate"
-end
-```
+    Resque.worker_exit do
+      puts "Call me when the work is about to terminate"
+    end
 
 The `worker_exit` hook will be run in the **parent** process.
 
@@ -85,11 +73,9 @@ hook is a method name in the following format:
 For example, a `before_perform` hook which adds locking may be defined
 like this:
 
-``` ruby
-def before_perform_with_lock(*args)
-  set_lock!
-end
-```
+    def before_perform_with_lock(*args)
+      set_lock!
+    end
 
 Once this hook is made available to your job (either by way of
 inheritence or `extend`), it will be run before the job's `perform`
@@ -130,49 +116,45 @@ The available hooks are:
 Hooks are easily implemented with superclasses or modules. A superclass could
 look something like this.
 
-``` ruby
-class LoggedJob
-  def self.before_perform_log_job(*args)
-    Logger.info "About to perform #{self} with #{args.inspect}"
-  end
-end
+    class LoggedJob
+      def self.before_perform_log_job(*args)
+        Logger.info "About to perform #{self} with #{args.inspect}"
+      end
+    end
 
-class MyJob < LoggedJob
-  def self.perform(*args)
-    ...
-  end
-end
-```
+    class MyJob < LoggedJob
+      def self.perform(*args)
+        ...
+      end
+    end
 
 Modules are even better because jobs can use many of them.
 
-``` ruby
-module ScaledJob
-  def after_enqueue_scale_workers(*args)
-    Logger.info "Scaling worker count up"
-    Scaler.up! if Resque.info[:pending].to_i > 25
-  end
-end
+    module ScaledJob
+      def after_enqueue_scale_workers(*args)
+        Logger.info "Scaling worker count up"
+        Scaler.up! if Resque.info[:pending].to_i > 25
+      end
+    end
 
-module LoggedJob
-  def before_perform_log_job(*args)
-    Logger.info "About to perform #{self} with #{args.inspect}"
-  end
-end
+    module LoggedJob
+      def before_perform_log_job(*args)
+        Logger.info "About to perform #{self} with #{args.inspect}"
+      end
+    end
 
-module RetriedJob
-  def on_failure_retry(e, *args)
-    Logger.info "Performing #{self} caused an exception (#{e}). Retrying..."
-    Resque.enqueue self, *args
-  end
-end
+    module RetriedJob
+      def on_failure_retry(e, *args)
+        Logger.info "Performing #{self} caused an exception (#{e}). Retrying..."
+        Resque.enqueue self, *args
+      end
+    end
 
-class MyJob
-  extend LoggedJob
-  extend RetriedJob
-  extend ScaledJob
-  def self.perform(*args)
-    ...
-  end
-end
-```
+    class MyJob
+      extend LoggedJob
+      extend RetriedJob
+      extend ScaledJob
+      def self.perform(*args)
+        ...
+      end
+    end
