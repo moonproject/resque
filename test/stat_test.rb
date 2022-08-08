@@ -10,7 +10,7 @@ describe "Resque::Stat" do
       @stat[stat]
     end
 
-    def increment_stat(stat, by = 1, redis: nil)
+    def increment_stat(stat, by)
       @stat[stat] += by
     end
 
@@ -18,7 +18,7 @@ describe "Resque::Stat" do
       @stat[stat] -= by
     end
 
-    def clear_stat(stat, redis: nil)
+    def clear_stat(stat)
       @stat[stat] = 0
     end
   end

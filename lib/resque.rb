@@ -584,9 +584,9 @@ module Resque
   def queue_sizes
     queue_names = queues
 
-    sizes = redis.pipelined do |piped|
+    sizes = redis.pipelined do
       queue_names.each do |name|
-        piped.llen("queue:#{name}")
+        redis.llen("queue:#{name}")
       end
     end
 
@@ -597,11 +597,11 @@ module Resque
   def sample_queues(sample_size = 1000)
     queue_names = queues
 
-    samples = redis.pipelined do |piped|
+    samples = redis.pipelined do
       queue_names.each do |name|
         key = "queue:#{name}"
-        piped.llen(key)
-        piped.lrange(key, 0, sample_size - 1)
+        redis.llen(key)
+        redis.lrange(key, 0, sample_size - 1)
       end
     end
 
