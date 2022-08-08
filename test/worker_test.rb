@@ -1263,7 +1263,6 @@ describe "Resque::Worker" do
       new_connection = run_in_job do
         Resque.redis._client.connection.instance_variable_get("@sock").object_id
       end
-      assert Resque.redis._client.connected?
       refute_equal original_connection, new_connection
     end
 
