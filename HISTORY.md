@@ -3,14 +3,10 @@
 ### Fixed
 
 * Fix NoMethodError: undefined method 'application' for Rails:Module when Rails module is defined but not a full Rails app (#1799)
-* Fix deprecation warnings in Redis#pipelined for redis 4.6 (#1806)
-* Add Ruby syntax highlighting to remaining markdown docs (#1802)
 * Fix pagination section (#1809)
-* Fix `before_run` undefined local variable or method `runner` (#1811)
+* Added support for pausing all workers by setting the Redis key `pause-all-workers` to string value "true" (#1803)
 
 ### Added
-
-* Added support for pausing all workers by setting the Redis key `pause-all-workers` to string value "true" (#1803)
 
 ## 2.2.1
 
