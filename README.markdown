@@ -165,7 +165,7 @@ require 'resque/tasks'
 require 'your/app' # Include this line if you want your workers to have access to your application
 ```
 
-#### Rails
+#### Rails 3+
 
 To make resque specific changes, you can override the `resque:setup` job in `lib/tasks` (ex: `lib/tasks/resque.rake`). GitHub's setup task looks like this:
 
@@ -331,9 +331,9 @@ run Rack::URLMap.new \
 Check `examples/demo/config.ru` for a functional example (including
 HTTP basic auth).
 
-#### Rails
+#### Rails 3+
 
-You can also mount Resque on a subpath in your existing Rails app by adding `require 'resque/server'` to the top of your routes file or in an initializer then adding this to `routes.rb`:
+You can also mount Resque on a subpath in your existing Rails 3 app by adding `require 'resque/server'` to the top of your routes file or in an initializer then adding this to `routes.rb`:
 
 ``` ruby
 mount Resque::Server.new, :at => "/resque"
@@ -770,7 +770,7 @@ send patches for any tweaks or improvements you can make to it.
 
 If your workers remain idle for too long they may lose their MySQL connection. Depending on your version of Rails, we recommend the following:
 
-##### Rails
+##### Rails 3.x
 In your `perform` method, add the following line:
 
 ``` ruby
