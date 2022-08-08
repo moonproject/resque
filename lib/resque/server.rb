@@ -205,11 +205,6 @@ module Resque
       redirect u('failed')
     end
 
-    post "/failed/clear_retried" do
-      Resque::Failure.clear_retried
-      redirect u('failed')
-    end
-
     post "/failed/:queue/clear" do
       Resque::Failure.clear params[:queue]
       redirect u('failed')
