@@ -5,7 +5,7 @@ You can customize Resque or write plugins using its hook API. In many
 cases you can use a hook rather than mess with Resque's internals.
 
 For a list of available plugins see
-<https://github.com/resque/resque/wiki/plugins>.
+<http://wiki.github.com/resque/resque/plugins>.
 
 
 Worker Hooks
