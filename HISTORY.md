@@ -1,28 +1,6 @@
 ## Unreleased
 
 ### Added
-
-*
-*
-
-### Fixed
-
-*
-*
-
-## 2.1.0
-
-### Security
-
-* Fix XSS via URL path in admin web UI queues view #1687
-* Replace onclick handlers in server code to support Content Security Policies that don't allow 'unsafe-inline'
-* Update jQuery from 1.12.4 to 3.6.0
-
-### Added
-
-* Add requeue_queue method to Resque::Failure::Multiple #1659
-* Confirmation prompt in admin front-end before submitting the retry of all failed jobs. #1753
-* Railtie for default rake task setup when in Rails. #1715
 * Added two new hooks.
   - `queue_empty` when the job queue empties and the worker becomes idle
   - `worker_exit` when the worker exits
@@ -31,11 +9,12 @@
   further details. (@jeremywadsack)
 
 ### Fixed
-
-* live poller shouldn't restart itself until it successds or fails. #1740
-* Fix parsing worker_id when queue name includes colon. #1691
-* Prune workers which haven't been registered but have set a heartbeat. #1751
+* Prune workers which haven't been registered but have set a heartbeat
 * `Resque::Failure::Multiple.remove` did not pass on the queue parameter
+* Replace onclick handlers in server code to support Content Security Policies that don't allow 'unsafe-inline'
+
+### Changed
+* Update jQuery from 1.12.4 to 3.6.0
 
 ## 2.0.0 (2018-11-06)
 
