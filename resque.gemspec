@@ -44,6 +44,4 @@ Gem::Specification.new do |s|
     * A Rake task for starting a worker which processes jobs
     * A Sinatra app for monitoring queues, jobs, and workers.
 description
-
-  s.metadata['changelog_uri'] = 'https://github.com/resque/resque/blob/master/HISTORY.md'
 end
